@@ -167,6 +167,7 @@ canvas { display: block; width: 100%; }
 .extra { margin-top: 12px; border-top: 1px solid var(--line); padding-top: 8px; display: flex; flex-direction: column; gap: 6px; font-size: 12px; color: var(--muted); }
 .extra div { display: flex; justify-content: space-between; gap: 12px; }
 .extra b { font-family: var(--mono); font-weight: 500; color: var(--text); white-space: nowrap; }
+.extra b.ok, .extra b.bad { white-space: normal; text-align: right; }   /* the battery verdict is long: wrap it instead of overflowing the card on ~1366-px laptops */
 
 .disp { margin-top: 12px; border-top: 1px solid var(--line); padding-top: 10px; font-size: 12px; color: var(--muted); }
 .disp-head { display: flex; align-items: center; gap: 8px; flex-wrap: wrap; }

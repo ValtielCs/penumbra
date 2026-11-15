@@ -225,3 +225,5 @@ Literature: Gläser et al. 2018 (PSS); Bussey et al. 2010 (Icarus). Library: Ast
 **AI disclosure:** most of the code, the tests, the documentation, the slides and the demo video were written with an AI coding
 assistant (Claude, Anthropic) under the team's direction. Every number shown is reproducible with the scripts in `tools/`, validated
 against NASA/JPL Horizons and published illumination studies, and covered by unit tests in CI.
+
+**License:** MIT for the code in this repository ([LICENSE](LICENSE)); `vendor/astronomy.js` keeps its own MIT license (Don Cross).
