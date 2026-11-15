@@ -1,6 +1,4 @@
-# Space Apps 2026 — project page draft (copy into the form, edit freely)
-
-> Fill in the `[ … ]` placeholders. Everything on the project page must be in English.
+# Penumbra — Space Apps 2026 project page
 
 ## Project Name
 Penumbra — Lunar Landing Site Navigator
@@ -19,7 +17,7 @@ Horizons within 9 arcseconds, and its terrain-aware illumination reproduces publ
 
 ## Link to Project Demo
 https://valtielcs.github.io/penumbra/docs/penumbra-demo-30s.mp4
-[ 29.5-s video with English captions (H.264, plays in any browser). A YouTube link of the same file works too; the 7-slide deck is https://valtielcs.github.io/penumbra/docs/Penumbra-demo.pdf ]
+29.5-s video with English captions · 7-slide deck: https://valtielcs.github.io/penumbra/docs/Penumbra-demo.pdf
 
 ## Link to Final Project
 https://valtielcs.github.io/penumbra/  ·  source: https://github.com/ValtielCs/penumbra
@@ -80,13 +78,13 @@ A Node.js unit-test suite (205 checks, including synthetic terrain with analytic
 No build step and no server: it runs from static hosting such as GitHub Pages.
 
 ## Use of Super Intelligence (SI)
-[ TEAM: edit this so it describes your process exactly. Space Apps rules: SI must not be used to come up with the idea, and its use
-  must be disclosed. Keep it accurate rather than modest. Draft: ]
 We used Claude (Anthropic), an AI coding assistant, extensively. Working from the challenge statement and our instructions, it wrote most
 of the code (the browser app in JavaScript/WebGL and the Node.js/Python data pipeline), the unit tests, the documentation, the slide deck
-and the demo video, and it proposed many of the features. [Describe your own role here: what you chose and decided, what you reviewed,
-tested and presented.] We did not take any number on trust: every result is reproducible with the scripts in `tools/`, checked against
-NASA/JPL Horizons and published illumination studies, and covered by unit tests that run in GitHub Actions.
+and the demo video, and it proposed many of the features. Our own role: Nikita chose the challenge; Gleb did most of the hands-on work,
+and Nikita's share counts too. We made the decisions along the way together. The coding was "vibe coding": Gleb and the AI working side
+by side, because one head is good, but two work faster. We did not take any number on trust: every result is reproducible with the
+scripts in `tools/`, checked against NASA/JPL Horizons and published illumination studies, and covered by unit tests that run in GitHub
+Actions.
 
 ## NASA Data
 - **NASA LRO LOLA** polar gridded topography `LDEM_75S_240M` (PDS Geosciences Node), the source of every terrain horizon and the shadow map.
