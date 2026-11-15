@@ -111,8 +111,7 @@ canvas { display: block; width: 100%; }
 #panorama { height: 300px; cursor: grab; touch-action: none; }
 #panorama:active { cursor: grabbing; }
 #timeline { height: 214px; cursor: ew-resize; touch-action: none; }
-/* square up to 640 px; on wider panels the map keeps 640 px of height and fills the width (the shader keeps one km/px scale) */
-.map-wrap { position: relative; width: 100%; aspect-ratio: 1 / 1; max-height: 640px; margin: 0 auto; border-radius: 8px; overflow: hidden; background: #05070d; }
+.map-wrap { position: relative; width: 100%; max-width: 640px; aspect-ratio: 1 / 1; margin: 0 auto; border-radius: 8px; overflow: hidden; background: #05070d; }
 #map-gl, #map { position: absolute; inset: 0; width: 100%; height: 100%; }
 #map { cursor: crosshair; touch-action: none; }
 .map-note { position: absolute; left: 8px; bottom: 8px; font-size: 11px; background: rgba(5, 7, 13, .75); padding: 3px 7px; border-radius: 6px; pointer-events: none; }
@@ -242,7 +241,7 @@ td.best { color: var(--both); font-weight: 600; }
 /* ---------- responsive ---------- */
 @media (max-width: 1180px) {
   .grid2 { grid-template-columns: 1fr; }
-  .map-wrap { max-height: 520px; }
+  .map-wrap { max-width: 520px; }
 }
 @media (max-width: 900px) {
   .plan { grid-template-columns: 1fr; }
@@ -260,4 +259,14 @@ td.best { color: var(--both); font-weight: 600; }
   .extra div, .disp-out .row { flex-wrap: wrap; }
   .extra b, .disp-out b { white-space: normal; }
   th, td { padding: 6px 5px; }
+}
+
+/* Wide two-column layout on a screen 1300-1527 px tall (e.g. 2560x1440 with the browser's tabs and address bar):
+   trim the panorama, the 3D view and the timeline, and size the square map to what is left, so the whole Plan page
+   fits in the window without scrolling or full screen. The map never needs to be taller than the Now panel next to it. */
+@media (min-width: 1181px) and (min-height: 1300px) and (max-height: 1527px) {
+  #panorama { height: 210px; }
+  .v3d-wrap { height: 236px; }
+  #timeline { height: 184px; }
+  .map-wrap { max-width: clamp(420px, calc(100vh - 790px), 640px); }
 }
