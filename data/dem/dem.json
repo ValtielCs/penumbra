@@ -1,0 +1,25 @@
+{
+  "source": "LRO LOLA GDR LDEM_75S_240M (PDS Geosciences Node), polar stereographic, MOON_ME (DE421)",
+  "encoding": "int16 LE, per-row delta, byte-plane shuffle (lo then hi), gzip",
+  "radiusM": 1737400,
+  "dnToMeters": 0.5,
+  "minM": -7764.5,
+  "maxM": 7024.5,
+  "projection": "x = rho*sin(lon), y = rho*cos(lon), rho = 2R*tan(pi/4 + lat/2); col = off + x/scale; row = off - y/scale",
+  "levels": [
+    {
+      "file": "l0.bin.gz",
+      "n": 1520,
+      "scale": 240,
+      "off": 759.5,
+      "latLimit": -84
+    },
+    {
+      "file": "l1.bin.gz",
+      "n": 953,
+      "scale": 960,
+      "off": 476,
+      "latLimit": -75
+    }
+  ]
+}

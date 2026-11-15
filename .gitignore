@@ -1,0 +1,11 @@
+# raw downloads (29 MB DEM, Horizons tables) — rebuild with tools/, see README
+raw/
+.claude/
+node_modules/
+*.log
+
+# hackathon guide (not part of the app)
+NASA Space Apps Challenge.pdf
+# docs/_frames/ (72 hero frames, 1.6 MB) IS committed: docs/video.html and docs/penumbra-hero.webp are built from it
+docs/_video/
+docs/penumbra-demo-30s.webm

@@ -1,0 +1,19 @@
+# keep binary data byte-exact (the DEM pyramid is gzip; images/PDF are binary)
+*.gz    binary
+*.bin   binary
+*.png   binary
+*.webp  binary
+*.pdf   binary
+*.img   binary
+*.mp4   binary
+*.jpg   binary
+# text files: LF in the repository
+*.js    text eol=lf
+*.mjs   text eol=lf
+*.cjs   text eol=lf
+*.json  text eol=lf
+*.html  text eol=lf
+*.css   text eol=lf
+*.md    text eol=lf
+*.sh    text eol=lf
+*.py    text eol=lf

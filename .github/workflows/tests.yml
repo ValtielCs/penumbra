@@ -1,0 +1,27 @@
+# Unit tests of the physics/geometry core + a syntax check of every browser module, on each push and PR.
+# No data download needed: the tests use synthetic inputs and the bundled Astronomy Engine.
+name: tests
+on:
+  push:
+  pull_request:
+permissions:
+  contents: read
+jobs:
+  core:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 24
+      - name: Unit tests (js/core)
+        run: node tools/test-core.mjs
+      # plain `node --check file.js` does not parse .js files as ES modules (it can miss real syntax errors),
+      # so the browser modules are piped in with an explicit module input type
+      # GitHub Pages paths are case-sensitive and the site lives under /<repo>/: check every relative link and asset path
+      - name: Links and asset paths
+        run: node tools/check-links.mjs .
+      - name: Syntax check of every ES module
+        run: |
+          for f in js/*.js js/core/*.js js/ui/*.js; do node --input-type=module --check < "$f" || { echo "::error file=$f::syntax error"; exit 1; }; done
+          for f in tools/*.mjs; do node --check "$f"; done

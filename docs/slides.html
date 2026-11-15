@@ -1,0 +1,182 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>Penumbra — Space Apps 2026 demo deck</title>
+<!--
+  Team 42 WW (Kazakhstan). Before the final export the live links must be filled in
+  (search for https://valtielcs.github.io/penumbra/ and https://github.com/ValtielCs/penumbra; tools/publish.sh fills them in).
+  Export to PDF:  bash tools/build-slides.sh   (uses headless Microsoft Edge)
+-->
+<style>
+  :root { --bg:#070a12; --panel:#0e1322; --line:#222c45; --text:#e6ebf5; --muted:#8a96b2; --sun:#ffc24b; --earth:#4da3ff; --both:#39d98a; }
+  @page { size: 1280px 720px; margin: 0; }
+  * { box-sizing: border-box; }
+  html, body { margin: 0; background: #000; }
+  body { font: 22px/1.4 "Segoe UI", system-ui, sans-serif; color: var(--text); }
+  .slide { width: 1280px; height: 720px; position: relative; overflow: hidden; page-break-after: always; break-after: page;
+    background: radial-gradient(900px 500px at 80% -10%, #16204a 0%, var(--bg) 60%); padding: 52px 64px; display: flex; flex-direction: column; }
+  .slide:last-child { page-break-after: auto; break-after: auto; }
+  h1 { font-size: 72px; margin: 0; letter-spacing: .02em; }
+  h2 { font-size: 38px; margin: 0 0 20px; }
+  .kicker { font-size: 16px; letter-spacing: .18em; text-transform: uppercase; color: var(--sun); margin-bottom: 12px; }
+  .muted { color: var(--muted); }
+  .row { display: flex; gap: 32px; flex: 1; min-height: 0; }
+  .col { flex: 1; min-width: 0; display: flex; flex-direction: column; }
+  .shot { border: 1px solid var(--line); border-radius: 14px; width: 100%; height: auto; display: block; box-shadow: 0 20px 60px rgba(0,0,0,.5); }
+  .crop { border: 1px solid var(--line); border-radius: 14px; overflow: hidden; box-shadow: 0 20px 60px rgba(0,0,0,.5); background: #000; }
+  .crop img { display: block; }
+  ul { margin: 0; padding-left: 26px; } li { margin: 0 0 13px; }
+  b.sun { color: var(--sun); } b.earth { color: var(--earth); } b.ok { color: var(--both); }
+  .stat { background: var(--panel); border: 1px solid var(--line); border-radius: 14px; padding: 18px 22px; }
+  .stat .v { font: 600 40px/1.1 Consolas, monospace; }
+  .stat .k { font-size: 17px; color: var(--muted); margin-top: 6px; }
+  .grid3 { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 18px; }
+  .fit { width: 100%; height: 100%; object-fit: cover; display: block; }
+  .cap { font-size: 17px; color: #c3cbe0; margin-top: 10px; line-height: 1.35; }
+  .cap b { color: var(--text); }
+  .foot { position: absolute; left: 64px; right: 64px; bottom: 24px; display: flex; justify-content: space-between; font-size: 14px; color: var(--muted); }
+  /* Space Apps rule: SI-assisted images and videos carry a visible watermark (every slide, top-right, above the padding) */
+  .slide::after { content: 'SI-assisted'; position: absolute; top: 14px; right: 24px; font: 600 13px/1 "Segoe UI", system-ui, sans-serif;
+    color: var(--muted); background: rgba(4,6,12,.55); border: 1px solid var(--line); border-radius: 6px; padding: 5px 9px; }
+  table { border-collapse: collapse; width: 100%; font-size: 18px; }
+  td, th { padding: 8px 10px; border-bottom: 1px solid var(--line); text-align: left; }
+  th { color: var(--muted); font-weight: 500; font-size: 14px; text-transform: uppercase; letter-spacing: .08em; }
+  .flow { display: flex; align-items: stretch; gap: 12px; margin: 0 0 20px; }
+  .flow div { flex: 1; background: var(--panel); border: 1px solid var(--line); border-radius: 12px; padding: 12px 14px; font-size: 16px; }
+  .flow div b { display: block; font-size: 13px; letter-spacing: .1em; text-transform: uppercase; color: var(--sun); margin-bottom: 5px; }
+  .arrow { flex: 0 0 auto !important; background: none !important; border: none !important; align-self: center; color: var(--muted); padding: 0 !important; font-size: 26px !important; }
+  .pill { display: inline-block; font-size: 15px; padding: 3px 10px; border-radius: 999px; border: 1px solid var(--line); background: var(--panel); margin: 0 6px 8px 0; }
+</style>
+</head>
+<body>
+
+<!-- 1 · TITLE -->
+<section class="slide" style="justify-content:center">
+  <div class="crop" style="position:absolute;right:40px;top:58px;width:560px;height:560px;transform:rotate(-2deg)">
+    <img src="img-illumination.png" style="width:560px;height:560px">
+  </div>
+  <div class="crop" style="position:absolute;right:500px;bottom:40px;width:300px;height:170px;transform:rotate(2deg)">
+    <img class="fit" src="img-eye-earth.png" style="object-position:50% 40%">
+  </div>
+  <div style="position:relative;z-index:2;max-width:560px">
+    <div class="kicker">NASA Space Apps Challenge 2026 · Lunar Landing Site Navigator</div>
+    <h1>Penumbra</h1>
+    <p style="font-size:30px;margin:10px 0 30px">Will we have power? Can we call home?<br><span class="muted">Any lunar site, any date: answered in seconds on real NASA terrain.</span></p>
+    <div style="font-size:22px"><b>Team:</b> 42 WW <span class="muted">· Kazakhstan</span><div class="muted" style="margin-top:6px">Nikita Chesnokov · Gleb Savelyev</div></div>
+  </div>
+  <div class="foot"><span>Challenge: Lunar Landing Site Navigator</span><span>NASA LRO LOLA topography · NASA/JPL Horizons · DSN</span></div>
+</section>
+
+<!-- 2 · PROBLEM -->
+<section class="slide">
+  <div class="kicker">The problem</div>
+  <h2>At the lunar south pole, a ridge 20 km away decides your mission</h2>
+  <div class="grid3" style="margin-bottom:26px">
+    <div class="stat"><div class="v" style="color:var(--sun)">≤ 1.6°</div><div class="k">highest Sun in a lunar day at the Connecting Ridge. At Apollo 11: 89°</div></div>
+    <div class="stat"><div class="v" style="color:var(--earth)">±7°</div><div class="k">Earth bobs up and down (libration), so direct-to-Earth links come and go</div></div>
+    <div class="stat"><div class="v">88% <span class="muted" style="font-size:28px">vs</span> 0%</div><div class="k">sunlight on the ridge vs Shackleton's floor, only 20 km apart</div></div>
+  </div>
+  <ul style="font-size:24px">
+    <li>Launch slips and hardware delays force teams to re-check <b>dates and sites</b> quickly.</li>
+    <li>The answers exist in Quickmap, Moon Trek and JPL Horizons, but each site × date means several interfaces and raw tables.</li>
+    <li>Students and the public rarely see <i>why</i> the pole is so hard.</li>
+  </ul>
+  <div class="foot"><span>Penumbra · Team 42 WW</span><span>2 / 7</span></div>
+</section>
+
+<!-- 3 · SOLUTION -->
+<section class="slide">
+  <div class="kicker">Our solution</div>
+  <h2>One screen: Sun, Earth and the real horizon</h2>
+  <div class="row">
+    <div class="col" style="flex:1.6"><img class="shot" src="plan.png"></div>
+    <div class="col" style="font-size:19px">
+      <ul>
+        <li><b class="sun">360° horizon</b> ray-marched from NASA LOLA terrain, with the Sun & Earth tracks for the whole mission.</li>
+        <li><b class="sun">Live shadow map</b>: every pixel traced toward the Sun on the GPU.</li>
+        <li><b class="earth">Time to sunset & Earthset</b>, array W/m², longest darkness, comm gaps.</li>
+        <li><b class="ok">Viability</b>: battery simulation of your power system, and Deep Space Network antennas that see the Moon.</li>
+        <li>Artemis, CLPS, ISRO, JAXA, CNSA and Apollo sites, or click <b>anywhere</b>.</li>
+      </ul>
+    </div>
+  </div>
+  <div class="foot"><span>Penumbra · Team 42 WW</span><span>3 / 7</span></div>
+</section>
+
+<!-- 4 · VIEWS -->
+<section class="slide">
+  <div class="kicker">See the pole the way the Sun does</div>
+  <h2>Three views, one physics engine</h2>
+  <div class="grid3" style="gap:22px">
+    <div><div class="crop" style="height:330px"><img class="fit" src="img-illumination.png" style="object-position:30% 55%"></div>
+      <div class="cap"><b>A year of sunlight in under 0.1 s</b> (desktop GPU). GPU-averaged illumination reveals near-eternal light on the Shackleton rim and Connecting Ridge, and permanently shadowed craters. ★ = best-lit spot (91%).</div></div>
+    <div><div class="crop" style="height:330px"><img class="fit" src="img-orbit.png" style="object-position:55% 50%"></div>
+      <div class="cap"><b>3D terrain</b> lit by the real Sun with ray-traced shadows: the same GPU code as the map, ±24 km of LOLA terrain.</div></div>
+    <div><div class="crop" style="height:330px"><img class="fit" src="img-eye-earth.png" style="object-position:50% 50%"></div>
+      <div class="cap"><b>Astronaut's eye</b>: the Earth at true size with its real phase, rising just above the ridges, and the Sun skimming the horizon.</div></div>
+  </div>
+  <div class="foot"><span>Penumbra · Team 42 WW</span><span>4 / 7</span></div>
+</section>
+
+<!-- 5 · WHAT-IF -->
+<section class="slide">
+  <div class="kicker">Rapid what-ifs</div>
+  <h2>“The landing slipped, or we missed the target. Now what?”</h2>
+  <div class="row" style="flex:0 0 auto">
+    <div class="col" style="flex:1.5">
+      <div class="crop" style="height:355px"><img src="compare.png" style="width:672px"></div>
+      <div class="cap"><b>Schedule slip.</b> ±1-day buttons, the best landing dates of the next 12 months, side-by-side scenarios and <b>every site × every landing day</b>.
+        Landing on Connecting Ridge on 1 Jan 2027: a whole week with <b class="earth">no direct-to-Earth link (0%)</b>. One week later: <b class="earth">73%</b>.</div>
+    </div>
+    <div class="col">
+      <div class="crop" style="height:355px"><img class="fit" src="img-ellipse-window.png" style="object-position:50% 42%;transform:scale(1.5);transform-origin:50% 44%"></div>
+      <div class="cap"><b>Off-target touchdown.</b> The whole mission re-run at 19 points of a ±500 m landing ellipse (Connecting Ridge, Mar 2027):
+        sunlight <b class="sun">23–99%</b>, and a CLPS-class battery survives at only <b>7 of 19</b> points.</div>
+    </div>
+  </div>
+  <div class="foot"><span>Penumbra · Team 42 WW</span><span>5 / 7</span></div>
+</section>
+
+<!-- 6 · HOW + VALIDATION -->
+<section class="slide">
+  <div class="kicker">How it works · how we know it's right</div>
+  <h2>NASA data, computed live in the browser, checked against NASA</h2>
+  <div class="flow">
+    <div><b>NASA LRO LOLA</b>Polar DEM LDEM_75S_240M: 240 m/px to 84°S, 960 m/px to 75°S</div><div class="arrow">→</div>
+    <div><b>Horizon & shadows</b>Great-circle ray-marching up to 600 km, true lunar curvature (CPU + GPU)</div><div class="arrow">→</div>
+    <div><b>Ephemeris</b>Sun, Earth, IAU lunar rotation in the Mean-Earth frame; DSN geometry</div><div class="arrow">→</div>
+    <div><b>Mission answers</b>Sunlight, W/m², battery, DTE windows, time to sunset/Earthset</div>
+  </div>
+  <table>
+    <tr><th>Validation</th><th>Result</th></tr>
+    <tr><td>Sun & Earth elevation vs <b>NASA/JPL Horizons</b> (3 lunar sites incl. Apollo 11, 1969)</td><td><b class="ok">≤ 9″</b></td></tr>
+    <tr><td>20-yr sunlight, Connecting Ridge C1 / C2 vs Gläser et al. 2018 (88.0 / 78.1%)</td><td><b class="ok">87.7 / 78.0%</b></td></tr>
+    <tr><td>Shackleton crater floor (permanently shadowed)</td><td><b class="ok">0.0%</b></td></tr>
+    <tr><td>GPU maps vs CPU horizon engine: lit/shadowed at 400 instants · one-year sunlight at 10 sites</td><td><b class="ok">400/400 · ≤ 0.2 pts</b></td></tr>
+    <tr><td>Line of sight to each DSN antenna (not Earth's centre) vs exact Astronomy Engine geometry</td><td><b class="ok">0.1″</b></td></tr>
+    <tr><td>Why the landing ellipse matters: one-year sunlight only 18 m from the de Gerlache rim site</td><td><b class="sun">64.6% → 68.7%</b></td></tr>
+  </table>
+  <div class="foot"><span>Penumbra · Team 42 WW · in-app “Verify in JPL Horizons” opens the identical query</span><span>6 / 7</span></div>
+</section>
+
+<!-- 7 · IMPACT -->
+<section class="slide">
+  <div class="kicker">Impact &amp; what's next</div>
+  <h2>From mission rooms to classrooms</h2>
+  <div class="row">
+    <div class="col" style="font-size:20px">
+      <ul>
+        <li><b>Planners</b>: re-plan in minutes when CLPS or Artemis schedules shift; share an exact scenario or comparison with one link; export CSV or a printable mission brief.</li>
+        <li><b>Educators &amp; public</b>: a guided tour and eight one-click lessons (why the Sun never climbs, why masts and nuclear power matter, why the far side needs relays).</li>
+        <li><b>Next</b>: 5 m/px Artemis region DEMs, link budgets, thermal models, rover traverse lighting, more languages.</li>
+      </ul>
+      <div style="margin-top:6px"><span class="pill">No install · any modern browser</span><span class="pill">No server · static files</span><span class="pill">Public source code</span></div>
+    </div>
+    <div class="col"><div class="crop" style="height:420px"><img src="learn.png" style="width:900px"></div></div>
+  </div>
+  <div class="foot"><span>Try it: https://valtielcs.github.io/penumbra/ · Code: https://github.com/ValtielCs/penumbra</span><span>7 / 7</span></div>
+</section>
+
+</body>
+</html>

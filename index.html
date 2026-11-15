@@ -1,0 +1,286 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <!-- defence in depth: only our own scripts and data; no eval, plugins, framing of forms or base-URL tricks -->
+  <meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self'; style-src 'self' 'unsafe-inline'; img-src 'self' data: blob:; connect-src 'self'; object-src 'none'; base-uri 'none'; form-action 'none'">
+  <meta name="referrer" content="strict-origin-when-cross-origin">
+  <title>Penumbra — Lunar Landing Site Navigator</title>
+  <meta name="description" content="Compare lunar landing sites and dates in seconds: Sun and Earth above the real LOLA terrain horizon, power and direct-to-Earth windows.">
+  <meta name="theme-color" content="#070a12">
+  <meta property="og:type" content="website">
+  <meta property="og:title" content="Penumbra — Lunar Landing Site Navigator">
+  <meta property="og:description" content="Will we have power? Can we call home? The Sun and the Earth above the real NASA LOLA horizon of any lunar south-pole site, for any date, computed live in your browser and validated against NASA/JPL Horizons.">
+  <meta property="og:image" content="https://valtielcs.github.io/penumbra/docs/og-card.png">
+  <meta property="og:url" content="https://valtielcs.github.io/penumbra/">
+  <link rel="canonical" href="https://valtielcs.github.io/penumbra/">
+  <meta name="twitter:card" content="summary_large_image">
+  <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Ccircle cx='32' cy='32' r='30' fill='%230b1020'/%3E%3Cpath d='M6 40 Q20 30 30 36 T58 34 L58 64 L6 64Z' fill='%23596273'/%3E%3Ccircle cx='44' cy='24' r='7' fill='%23ffc24b'/%3E%3C/svg%3E">
+  <link rel="stylesheet" href="css/app.css">
+  <!-- start the 3.6 MB LOLA terrain and the whole module graph immediately, instead of after app.js has loaded -->
+  <link rel="preload" href="data/dem/dem.json" as="fetch" crossorigin>
+  <link rel="preload" href="data/dem/l0.bin.gz" as="fetch" crossorigin>
+  <link rel="preload" href="data/dem/l1.bin.gz" as="fetch" crossorigin>
+  <link rel="preload" href="data/sites.json" as="fetch" crossorigin>
+  <link rel="modulepreload" href="js/app.js">
+  <link rel="modulepreload" href="js/core/dem.js">
+  <link rel="modulepreload" href="js/core/horizon.js">
+  <link rel="modulepreload" href="js/core/ephemeris.js">
+  <link rel="modulepreload" href="js/core/analysis.js">
+  <link rel="modulepreload" href="js/core/score.js">
+  <link rel="modulepreload" href="js/core/dsn.js">
+  <link rel="modulepreload" href="js/core/dispersion.js">
+  <link rel="modulepreload" href="js/core/bestdates.js">
+  <link rel="modulepreload" href="js/core/geo.js">
+  <link rel="modulepreload" href="js/ui/util.js">
+  <link rel="modulepreload" href="js/ui/panorama.js">
+  <link rel="modulepreload" href="js/ui/timeline.js">
+  <link rel="modulepreload" href="js/ui/map.js">
+  <link rel="modulepreload" href="js/ui/view3d.js">
+  <link rel="modulepreload" href="js/ui/compare.js">
+  <link rel="modulepreload" href="js/ui/learn.js">
+  <link rel="modulepreload" href="js/ui/validation.js">
+  <link rel="modulepreload" href="js/ui/tour.js">
+  <link rel="modulepreload" href="js/ui/brief.js">
+</head>
+<body>
+  <header class="topbar">
+    <div class="brand">
+      <svg viewBox="0 0 64 64" aria-hidden="true"><circle cx="32" cy="32" r="30" fill="#0b1020" stroke="#2a3550"/><path d="M6 40 Q20 30 30 36 T58 34 L58 64 L6 64Z" fill="#596273"/><circle cx="44" cy="24" r="7" fill="#ffc24b"/><circle cx="18" cy="20" r="4" fill="#4da3ff"/></svg>
+      <div>
+        <h1>Penumbra</h1>
+        <p>Lunar Landing Site Navigator</p>
+      </div>
+    </div>
+    <nav class="tabs" role="tablist">
+      <button role="tab" data-view="plan" aria-selected="true">Plan</button>
+      <button role="tab" data-view="compare">Compare</button>
+      <button role="tab" data-view="learn">Learn</button>
+      <button role="tab" data-view="validate">Data &amp; validation</button>
+    </nav>
+    <div class="top-actions">
+      <button class="btn ghost" id="btn-tour" title="Guided tour (45 s)">Tour</button>
+      <button class="btn ghost" id="btn-share" title="Copy a link to this exact scenario">Share link</button>
+      <a class="btn ghost" id="btn-horizons" target="_blank" rel="noopener" title="Open the same Sun/Earth query in NASA/JPL Horizons">Verify in JPL Horizons ↗</a>
+    </div>
+  </header>
+
+  <div id="loading" class="loading"><div class="spinner"></div><span id="loading-text">Loading NASA LOLA terrain…</span></div>
+
+  <!-- ============ PLAN ============ -->
+  <main id="view-plan" class="view plan active">
+    <aside class="side">
+      <section class="card">
+        <h2>Landing site</h2>
+        <input id="site-search" class="input" type="search" placeholder="Search sites…" aria-label="Search sites">
+        <div id="site-list" class="site-list" role="listbox" aria-label="Curated landing sites"></div>
+        <details class="custom">
+          <summary>Custom coordinates</summary>
+          <div class="row2">
+            <label>Lat °<input id="in-lat" class="input" type="number" step="0.01" min="-90" max="90" value="-89.45"></label>
+            <label>Lon °E<input id="in-lon" class="input" type="number" step="0.01" min="-180" max="360" value="222.7"></label>
+          </div>
+          <button class="btn" id="btn-go-custom">Go to coordinates</button>
+          <p class="hint">Tip: click anywhere on the polar map to drop a site.</p>
+        </details>
+      </section>
+
+      <section class="card">
+        <h2>Scenario</h2>
+        <label class="field">Landing date &amp; time (UTC)
+          <input id="in-start" class="input" type="datetime-local" step="60">
+        </label>
+        <label class="field">Mission window
+          <select id="in-duration" class="input">
+            <option value="1">1 day</option>
+            <option value="3">3 days</option>
+            <option value="7">7 days</option>
+            <option value="14" selected>14 days</option>
+            <option value="29.53">1 lunar day (29.5 d)</option>
+            <option value="90">90 days</option>
+            <option value="365.25">1 year</option>
+          </select>
+        </label>
+        <label class="field">Array / antenna height above ground: <b id="out-height">2 m</b>
+          <input id="in-height" type="range" min="0" max="6" step="1" value="1" aria-label="Array height">
+          <span class="scale"><span>0.5</span><span>2</span><span>5</span><span>10</span><span>20</span><span>50</span><span>100 m</span></span>
+        </label>
+        <label class="field">Direct-to-Earth elevation margin: <b id="out-comm">0°</b>
+          <input id="in-comm" type="range" min="0" max="5" step="0.5" value="0" aria-label="Communication margin">
+        </label>
+        <details class="power" id="power-box">
+          <summary>Power system <span class="muted" id="power-summary"></span></summary>
+          <div class="row2">
+            <label>Array area, m²<input id="pw-area" class="input" type="number" min="0.1" max="200" step="0.1"></label>
+            <label>Cell efficiency, %<input id="pw-eff" class="input" type="number" min="1" max="45" step="1"></label>
+            <label>Load, W<input id="pw-load" class="input" type="number" min="0" max="20000" step="10"></label>
+            <label>Battery, kWh<input id="pw-cap" class="input" type="number" min="0.1" max="1000" step="0.1"></label>
+          </div>
+          <p class="hint">Vertical Sun-tracking array, battery full at landing. Presets:
+            <button class="btn tiny" data-preset="rover">Small rover</button>
+            <button class="btn tiny" data-preset="lander">CLPS lander</button>
+            <button class="btn tiny" data-preset="base">Surface habitat</button></p>
+        </details>
+        <div class="btn-row">
+          <button class="btn" id="btn-slip-minus" title="Move landing 1 day earlier">−1 day</button>
+          <button class="btn" id="btn-slip-plus" title="Move landing 1 day later (schedule slip)">+1 day</button>
+          <button class="btn primary" id="btn-add-compare">+ Compare</button>
+        </div>
+        <details class="best" id="best-box">
+          <summary>Best landing dates <span class="muted">· next 12 months at this site</span></summary>
+          <div class="best-out" id="best-out"></div>
+        </details>
+      </section>
+    </aside>
+
+    <section class="main">
+      <div class="card panorama-card">
+        <div class="card-head">
+          <h2>Horizon view <span class="muted" id="pano-site"></span></h2>
+          <div class="seg" id="view-mode" role="group" aria-label="View">
+            <button data-v="pano" aria-pressed="true">360° panorama</button>
+            <button data-v="orbit" aria-pressed="false">3D terrain</button>
+            <button data-v="eye" aria-pressed="false">Astronaut's eye</button>
+          </div>
+        </div>
+        <div class="legend pano-only" id="pano-legend">
+          <span><i class="sw sun"></i>Sun path</span><span><i class="sw earth"></i>Earth path</span><span><i class="sw terrain"></i>LOLA terrain</span><span><i class="sw ideal"></i>0° (smooth Moon)</span>
+          <label class="toggle"><input type="checkbox" id="chk-follow"> follow Sun</label>
+        </div>
+        <div class="legend v3d-only" id="v3d-legend" hidden>
+          <span class="orbit-only">Vertical exaggeration
+            <select id="v3d-ve" class="input slim"><option value="1">×1</option><option value="2" selected>×2</option><option value="4">×4</option></select></span>
+          <span class="eye-only">Look at <button class="btn tiny" data-look="sun">Sun</button> <button class="btn tiny" data-look="earth">Earth</button></span>
+          <span class="muted">Shadows ray-marched through LOLA on the GPU · Sun and Earth at true size, Earth with its real phase</span>
+        </div>
+        <canvas id="panorama" tabindex="0" aria-label="Panoramic horizon with Sun and Earth paths; drag or use arrow keys to look around"></canvas>
+        <div class="v3d-wrap" id="v3d-wrap" hidden>
+          <canvas id="v3d" aria-hidden="true"></canvas>
+          <canvas id="v3d-ov" aria-label="3D view of the terrain around the site; drag to rotate"></canvas>
+        </div>
+        <div class="pano-foot muted" id="pano-foot"></div>
+      </div>
+
+      <div class="grid2">
+        <div class="card map-card">
+          <div class="card-head">
+            <h2>South polar map <span class="muted">LOLA 240 m · polar stereographic</span></h2>
+            <div class="legend">
+              <label>Layer
+                <select id="map-layer" class="input slim" aria-label="Map layer">
+                  <option value="1" selected>Live sunlight &amp; shadows</option>
+                  <option value="2">Live Earth line of sight</option>
+                  <option value="3">Sunlight % over mission window</option>
+                  <option value="4">Earth-in-view % over mission window</option>
+                  <option value="0">Shaded relief</option>
+                </select>
+              </label>
+              <button class="btn tiny" id="btn-map-reset">Reset view</button>
+            </div>
+          </div>
+          <div class="map-wrap">
+            <canvas id="map-gl" aria-hidden="true"></canvas>
+            <canvas id="map" tabindex="0" aria-label="Polar map. Click, or press Enter, to analyse a spot; arrow keys pan, plus and minus zoom, 0 resets the view"></canvas>
+            <div class="map-note muted" id="map-note"></div>
+          </div>
+        </div>
+
+        <div class="card metrics-card">
+          <div class="card-head"><h2>Now <span class="muted" id="now-time"></span></h2></div>
+          <div class="now-grid">
+            <div class="now sun" id="now-sun"></div>
+            <div class="now earth" id="now-earth"></div>
+          </div>
+          <h3>Mission window</h3>
+          <div class="kpis" id="kpis"></div>
+          <div class="score" id="score"></div>
+          <div class="extra" id="extra"></div>
+          <div class="disp" id="disp">
+            <div class="disp-head">
+              <span>What if we land off target?</span>
+              <select id="disp-r" class="input slim" aria-label="Landing ellipse radius">
+                <option value="0.25">±250 m</option>
+                <option value="0.5" selected>±500 m</option>
+                <option value="1">±1 km</option>
+                <option value="2.5">±2.5 km</option>
+                <option value="5">±5 km</option>
+              </select>
+              <button class="btn tiny" id="btn-disp">Check 19 touchdown points</button>
+            </div>
+            <div class="disp-out" id="disp-out">Landers miss their target by hundreds of metres: in March 2025 IM-2 <i>Athena</i> came down about 250 m off target, inside a small crater. Penumbra re-runs this whole mission window at 19 points of the landing ellipse and maps the spread.</div>
+          </div>
+        </div>
+      </div>
+
+      <div class="card timeline-card">
+        <div class="card-head">
+          <h2>Timeline</h2>
+          <div class="legend">
+            <span><i class="sw sun"></i>Sunlight (disk fraction)</span><span><i class="sw earth"></i>Earth in view</span><span><i class="sw both"></i>Sun + Earth</span><span><i class="sw batt"></i>Battery charge</span>
+            <button class="btn tiny" id="btn-play" aria-label="Play">▶ Play</button>
+            <button class="btn tiny" id="btn-csv" title="Download the time series of this scenario as CSV">⤓ CSV</button>
+            <button class="btn tiny" id="btn-hz-csv" title="Download the terrain horizon mask (azimuth, elevation, distance)">⤓ Horizon</button>
+            <button class="btn tiny" id="btn-brief" title="One-page mission brief of this scenario (print or save as PDF)">⎙ Brief</button>
+          </div>
+        </div>
+        <canvas id="timeline" tabindex="0" aria-label="Timeline of sunlight and Earth visibility; drag or use arrow keys to scrub time"></canvas>
+      </div>
+    </section>
+  </main>
+
+  <!-- ============ COMPARE ============ -->
+  <main id="view-compare" class="view compare">
+    <section class="card">
+      <div class="card-head">
+        <h2>Scenario comparison</h2>
+        <div class="legend"><span class="muted">Add scenarios from the Plan tab with “+ Compare”. Click a row to open it.</span>
+          <button class="btn tiny" id="btn-compare-clear">Clear</button></div>
+      </div>
+      <div id="compare-table" class="table-wrap"></div>
+    </section>
+    <section class="card">
+      <div class="card-head">
+        <h2>When &amp; where to land <span class="muted">— each cell is a full mission window starting that day</span></h2>
+        <div class="legend">
+          <label>Year <select id="hm-year" class="input slim"></select></label>
+          <label>Window <select id="hm-dur" class="input slim"><option value="3">3 d</option><option value="7" selected>7 d</option><option value="14">14 d</option></select></label>
+          <label>Color by <select id="hm-metric" class="input slim">
+            <option value="score" selected>Mission score</option>
+            <option value="sunPct">Sunlight %</option>
+            <option value="earthPct">Earth visibility %</option>
+            <option value="dsnPct">DSN link % (antenna line of sight)</option>
+            <option value="bothPct">Sun + Earth %</option>
+            <option value="minSocPct">Battery: lowest charge %</option>
+          </select></label>
+        </div>
+      </div>
+      <canvas id="heatmap" aria-label="Heatmap of mission quality by site and landing date"></canvas>
+      <div class="hm-foot muted" id="hm-foot">Hover a cell for details · click to open that site and date in Plan.</div>
+    </section>
+  </main>
+
+  <!-- ============ LEARN ============ -->
+  <main id="view-learn" class="view learn">
+    <section class="lesson-intro card">
+      <h2>Why is the lunar south pole so hard?</h2>
+      <p>Eight ideas, each one click away from a live scenario. Every number below is computed in your browser from NASA LOLA topography and the same ephemeris that we validate against JPL Horizons.</p>
+    </section>
+    <div class="lessons" id="lessons"></div>
+  </main>
+
+  <!-- ============ DATA & VALIDATION ============ -->
+  <main id="view-validate" class="view validate">
+    <section class="card"><h2>How Penumbra computes</h2><div id="method"></div></section>
+    <section class="card"><h2>Validation against NASA/JPL Horizons &amp; literature</h2><div id="validation"></div><canvas id="val-chart"></canvas></section>
+    <section class="card"><h2>Data &amp; resources</h2><div id="sources"></div></section>
+  </main>
+
+  <div id="tooltip" class="tooltip" hidden></div>
+  <div id="toast" class="toast" hidden role="status"></div>
+  <div id="sr-status" class="sr-only" aria-live="polite"></div>
+
+  <script src="vendor/astronomy.browser.min.js"></script>
+  <script type="module" src="js/app.js"></script>
+</body>
+</html>

@@ -1,0 +1,299 @@
+{
+ "generated": "2026-11-15T10:32:45.128Z",
+ "sites": [
+  {
+   "id": "c1",
+   "name": "Connecting Ridge C1",
+   "group": "South pole",
+   "lat": -89.44,
+   "lon": 222.83,
+   "kind": "Illumination reference",
+   "note": "Ridge between Shackleton and de Gerlache craters — the best-lit spot at the south pole (88% average illumination at 2 m).",
+   "source": "Gläser et al. 2018, Planet. Space Sci. (NASA NTRS 20170007365)",
+   "terrain": true,
+   "groundM": 1952,
+   "longTerm": {
+    "period": "2025–2044",
+    "heightM": 2,
+    "sunPct": 87.7,
+    "earthPct": 53.4,
+    "longestNightH": 224
+   }
+  },
+  {
+   "id": "c2",
+   "name": "Connecting Ridge C2",
+   "group": "South pole",
+   "lat": -89.31,
+   "lon": 245.98,
+   "kind": "Illumination reference",
+   "note": "Second ridge site of the same study (78.1% average illumination at 2 m).",
+   "source": "Gläser et al. 2018",
+   "terrain": true,
+   "groundM": 1684,
+   "longTerm": {
+    "period": "2025–2044",
+    "heightM": 2,
+    "sunPct": 78,
+    "earthPct": 53.8,
+    "longestNightH": 238
+   }
+  },
+  {
+   "id": "pns",
+   "name": "Peak near Shackleton",
+   "group": "South pole",
+   "lat": -88.74,
+   "lon": 124.5,
+   "kind": "Literature high-illumination point",
+   "note": "Massif ~30 km from the pole; one of the original Artemis III candidate regions.",
+   "source": "Bussey et al. 2010, Icarus (Kaguya-based illumination study)",
+   "terrain": true,
+   "groundM": 1449,
+   "longTerm": {
+    "period": "2025–2044",
+    "heightM": 2,
+    "sunPct": 61.4,
+    "earthPct": 34.3,
+    "longestNightH": 320
+   }
+  },
+  {
+   "id": "dgr",
+   "name": "de Gerlache Rim",
+   "group": "South pole",
+   "lat": -88.71,
+   "lon": 291.3,
+   "kind": "Literature high-illumination point",
+   "note": "Rim of de Gerlache crater; Artemis III candidate region \"de Gerlache Rim\".",
+   "source": "Bussey et al. 2010, Icarus",
+   "terrain": true,
+   "groundM": 1757,
+   "longTerm": {
+    "period": "2025–2044",
+    "heightM": 2,
+    "sunPct": 64.2,
+    "earthPct": 44.2,
+    "longestNightH": 324
+   }
+  },
+  {
+   "id": "shk",
+   "name": "Shackleton crater floor",
+   "group": "South pole",
+   "lat": -89.67,
+   "lon": 129.78,
+   "kind": "Permanently shadowed region",
+   "note": "Cold trap that may hold water ice. Never sees the Sun or the Earth — shows why rovers must \"commute\" from lit ridges.",
+   "source": "IAU Gazetteer of Planetary Nomenclature (crater center)",
+   "terrain": true,
+   "groundM": -2786,
+   "longTerm": {
+    "period": "2025–2044",
+    "heightM": 2,
+    "sunPct": 0,
+    "earthPct": 0,
+    "longestNightH": 175322
+   }
+  },
+  {
+   "id": "mal",
+   "name": "Malapert Massif",
+   "group": "South pole",
+   "lat": -85.9882,
+   "lon": 2.053,
+   "kind": "Artemis III candidate region",
+   "note": "~5 km high massif facing the Earth — long proposed for its line of sight to Earth.",
+   "source": "Artemis III candidate region (NASA, 2024); summit located in LOLA DEM",
+   "refined": "summit within 8 km of -86, 0",
+   "terrain": true,
+   "groundM": 5168,
+   "longTerm": {
+    "period": "2025–2044",
+    "heightM": 2,
+    "sunPct": 74.3,
+    "earthPct": 77.8,
+    "longestNightH": 352
+   }
+  },
+  {
+   "id": "mou",
+   "name": "Mons Mouton",
+   "group": "South pole",
+   "lat": -84.3739,
+   "lon": 31.984,
+   "kind": "Artemis III candidate region",
+   "note": "Highest mountain near the south pole; Artemis III candidate regions \"Mons Mouton\" and \"Mons Mouton Plateau\".",
+   "source": "IAU Gazetteer; summit located in LOLA DEM",
+   "refined": "summit within 8 km of -84.6, 31",
+   "terrain": true,
+   "groundM": 5602,
+   "longTerm": {
+    "period": "2025–2044",
+    "heightM": 2,
+    "sunPct": 52.9,
+    "earthPct": 93,
+    "longestNightH": 382
+   }
+  },
+  {
+   "id": "nr2",
+   "name": "Nobile Rim 2",
+   "group": "South pole",
+   "lat": -84.20156,
+   "lon": 60.69989,
+   "kind": "Artemis III candidate region",
+   "note": "Rim of Nobile crater, one of the nine NASA Artemis III candidate regions (2024). Site DM2 ranked best for power, ISRU and human factors in a multi-criteria study.",
+   "source": "NASA Artemis III candidate regions (2024); site DM2 from arXiv:2406.19863 (Acta Astronautica, 2024)",
+   "terrain": true,
+   "groundM": 1123,
+   "longTerm": {
+    "period": "2025–2044",
+    "heightM": 2,
+    "sunPct": 34.6,
+    "earthPct": 27.5,
+    "longestNightH": 498
+   }
+  },
+  {
+   "id": "im2",
+   "name": "IM-2 Athena (CLPS)",
+   "group": "Missions",
+   "lat": -84.78,
+   "lon": 29.13,
+   "kind": "CLPS landing site",
+   "note": "Intuitive Machines IM-2 intended landing site on Mons Mouton; landed 6 Mar 2025 (tipped over).",
+   "source": "LROC / NASA (Intuitive Machines IM-2 landing region)",
+   "date": "2025-03-06T17:28:00Z",
+   "terrain": true,
+   "groundM": 5312,
+   "longTerm": {
+    "period": "2025–2044",
+    "heightM": 2,
+    "sunPct": 45.1,
+    "earthPct": 81.1,
+    "longestNightH": 458
+   }
+  },
+  {
+   "id": "im1",
+   "name": "IM-1 Odysseus (CLPS)",
+   "group": "Missions",
+   "lat": -80.13,
+   "lon": 1.44,
+   "kind": "CLPS landing site",
+   "note": "First CLPS landing (22 Feb 2024) near Malapert A crater, 300 km from the pole.",
+   "source": "LROC / NASA",
+   "date": "2024-02-22T23:23:00Z",
+   "terrain": true,
+   "groundM": 2615,
+   "longTerm": {
+    "period": "2025–2044",
+    "heightM": 2,
+    "sunPct": 43.2,
+    "earthPct": 100,
+    "longestNightH": 432
+   }
+  },
+  {
+   "id": "ch3",
+   "name": "Chandrayaan-3 Vikram (ISRO)",
+   "group": "Missions",
+   "lat": -69.373,
+   "lon": 32.319,
+   "kind": "ISRO landing site",
+   "note": "India's 2023 landing \"Shiv Shakti point\", the southernmost landing at the time.",
+   "source": "ISRO / LROC",
+   "date": "2023-08-23T12:34:00Z",
+   "terrain": false,
+   "groundM": null,
+   "longTerm": {
+    "period": "2025–2044",
+    "heightM": 2,
+    "sunPct": 50.1,
+    "earthPct": 100,
+    "longestNightH": 370
+   }
+  },
+  {
+   "id": "slim",
+   "name": "SLIM (JAXA)",
+   "group": "Missions",
+   "lat": -13.316,
+   "lon": 25.251,
+   "kind": "JAXA landing site",
+   "note": "Japan's pinpoint lander (19 Jan 2024) near Shioli crater.",
+   "source": "JAXA / LROC",
+   "date": "2024-01-19T15:20:00Z",
+   "terrain": false,
+   "groundM": null,
+   "longTerm": {
+    "period": "2025–2044",
+    "heightM": 2,
+    "sunPct": 50.1,
+    "earthPct": 100,
+    "longestNightH": 358
+   }
+  },
+  {
+   "id": "ce4",
+   "name": "Chang'e-4 (CNSA, far side)",
+   "group": "Missions",
+   "lat": -45.4446,
+   "lon": 177.5991,
+   "kind": "Far-side landing site",
+   "note": "On the far side the Earth is always below the horizon — direct-to-Earth contact is impossible, so a relay satellite (Queqiao) is required.",
+   "source": "CNSA / LROC",
+   "date": "2019-01-03T02:26:00Z",
+   "terrain": false,
+   "groundM": null,
+   "longTerm": {
+    "period": "2025–2044",
+    "heightM": 2,
+    "sunPct": 49.9,
+    "earthPct": 0,
+    "longestNightH": 362
+   }
+  },
+  {
+   "id": "a11",
+   "name": "Apollo 11",
+   "group": "Historic",
+   "lat": 0.67408,
+   "lon": 23.47297,
+   "kind": "Apollo landing site",
+   "note": "Equatorial site for contrast: the Sun climbs high and Earth hangs almost overhead.",
+   "source": "LROC (Apollo 11 LM position)",
+   "date": "1969-07-20T20:17:40Z",
+   "terrain": false,
+   "groundM": null,
+   "longTerm": {
+    "period": "2025–2044",
+    "heightM": 2,
+    "sunPct": 50.1,
+    "earthPct": 100,
+    "longestNightH": 356
+   }
+  },
+  {
+   "id": "a17",
+   "name": "Apollo 17",
+   "group": "Historic",
+   "lat": 20.1908,
+   "lon": 30.77168,
+   "kind": "Apollo landing site",
+   "note": "Taurus-Littrow valley, last crewed landing (1972).",
+   "source": "LROC (Apollo 17 LM position)",
+   "date": "1972-12-11T19:54:57Z",
+   "terrain": false,
+   "groundM": null,
+   "longTerm": {
+    "period": "2025–2044",
+    "heightM": 2,
+    "sunPct": 50.1,
+    "earthPct": 100,
+    "longestNightH": 358
+   }
+  }
+ ]
+}

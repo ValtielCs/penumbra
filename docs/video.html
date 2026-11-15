@@ -1,0 +1,167 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>Penumbra — 30-second demo video (renderer)</title>
+<!--
+  Source of docs/penumbra-demo-30s.mp4 (H.264; Space Apps demo: ≤ 30 s, English captions and the SI watermark burned in).
+  Preview:  http://127.0.0.1:8787/docs/video.html           (plays in real time)
+  Render:   http://127.0.0.1:8787/docs/video.html#render    (writes docs/_video/vf-NNN.webp through tools/serve.py)
+  Encode:   python tools/encode-video.py
+  Assets: penumbra hero frames (docs/_frames, from tools/record-frames.js) and img-v-*.png exported from the live app.
+-->
+<style>
+  html, body { margin: 0; background: #000; color: #8a96b2; font: 14px system-ui, sans-serif; }
+  canvas { display: block; width: min(100vw, 1280px); height: auto; aspect-ratio: 16 / 9; }
+  #s { padding: 8px 12px; }
+</style>
+</head>
+<body>
+<canvas id="c" width="1280" height="720"></canvas>
+<div id="s">Loading…</div>
+<script type="module">
+const W = 1280, H = 720, FPS = 30;
+const c = document.getElementById('c'), g = c.getContext('2d'), status = document.getElementById('s');
+const load = src => new Promise((res, rej) => { const i = new Image(); i.onload = () => res(i); i.onerror = () => rej(new Error(src)); i.src = src; });
+const hero = await Promise.all([...Array(72)].map((_, k) => load(`_frames/frame-${String(k).padStart(3, '0')}.webp`)));
+const IM = Object.fromEntries(await Promise.all(Object.entries({
+  plan: 'plan.png', year: 'img-v-year.png', eye: 'img-v-eye.png', ellipse: 'img-v-ellipse.png', compare: 'compare.png',
+}).map(async ([k, src]) => [k, await load(src)])));
+
+const clamp = (x, a = 0, b = 1) => Math.max(a, Math.min(b, x));
+const ease = x => (x < 0.5 ? 2 * x * x : 1 - (-2 * x + 2) ** 2 / 2);
+const lerp = (a, b, f) => a + (b - a) * f;
+
+/** Ken Burns: source rect (x, y, width) at f=0 → f=1, height follows 16:9, drawn full-frame. */
+function kb(im, a, b, f) {
+  const e = ease(clamp(f)), w = lerp(a[2], b[2], e), x = lerp(a[0], b[0], e), y = lerp(a[1], b[1], e);
+  g.drawImage(im, x, y, w, w * H / W, 0, 0, W, H);
+}
+/** Whole image letterboxed on a dark background with a slow zoom (for wide UI screenshots). */
+function fitZoom(im, f, z0 = 1, z1 = 1.06) {
+  g.fillStyle = '#070a12'; g.fillRect(0, 0, W, H);
+  const s = Math.min(W / im.width, H / im.height) * lerp(z0, z1, ease(clamp(f))), w = im.width * s, h = im.height * s;
+  g.drawImage(im, (W - w) / 2, (H - h) / 2 - 20, w, h);
+}
+function heroFrame(t, fps = 14) { return hero[Math.floor(t * fps) % hero.length]; }
+// The hero frames are 4:3 composites (map + horizon strip): letterbox them on their own dark background.
+function drawHero(t, dim = 0, top = false) {
+  const im = heroFrame(t);
+  g.fillStyle = '#05070d'; g.fillRect(0, 0, W, H);
+  if (top) g.drawImage(im, (W - 800) / 2, 0, 800, 600);               // natural size, room for a caption below
+  else g.drawImage(im, (W - 960) / 2, 0, 960, 720);
+  if (dim) { g.fillStyle = `rgba(4,6,12,${dim})`; g.fillRect(0, 0, W, H); }
+}
+function caption(main, sub, alpha, compact = false) {
+  if (alpha <= 0) return;
+  g.save(); g.globalAlpha = alpha;
+  if (compact) { g.fillStyle = 'rgba(4,6,12,.94)'; g.fillRect(0, H - 116, W, 116); }
+  else {
+    const grd = g.createLinearGradient(0, H - 190, 0, H);
+    grd.addColorStop(0, 'rgba(4,6,12,0)'); grd.addColorStop(0.45, 'rgba(4,6,12,.72)'); grd.addColorStop(1, 'rgba(4,6,12,.9)');
+    g.fillStyle = grd; g.fillRect(0, H - 190, W, 190);
+  }
+  g.textAlign = 'left'; g.textBaseline = 'alphabetic';
+  g.fillStyle = '#ffffff'; g.font = '600 38px "Segoe UI", system-ui, sans-serif'; g.fillText(main, 64, H - (sub ? 74 : 48));
+  if (sub) { g.fillStyle = '#c3cbe0'; g.font = '26px "Segoe UI", system-ui, sans-serif'; g.fillText(sub, 64, H - 34); }
+  g.restore();
+}
+function badge(alpha) {                                                // small brand mark, top-left
+  if (alpha <= 0) return;
+  g.save(); g.globalAlpha = alpha * 0.9;
+  g.fillStyle = 'rgba(4,6,12,.55)'; g.fillRect(24, 22, 318, 38);
+  g.fillStyle = '#ffc24b'; g.beginPath(); g.arc(46, 41, 8, 0, 7); g.fill();
+  g.fillStyle = '#e6ebf5'; g.font = '600 19px "Segoe UI", system-ui, sans-serif'; g.textBaseline = 'middle';
+  g.fillText('Penumbra · Lunar Landing Site Navigator', 62, 42);
+  g.restore();
+}
+function siMark() {                       // Space Apps rule: SI-assisted images and videos carry a visible watermark (top-right)
+  g.save(); g.globalAlpha = 0.9;
+  g.font = '600 17px "Segoe UI", system-ui, sans-serif'; g.textBaseline = 'middle'; g.textAlign = 'right';
+  const w = g.measureText('SI-assisted').width + 28;
+  g.fillStyle = 'rgba(4,6,12,.55)'; g.fillRect(W - 24 - w, 22, w, 38);
+  g.fillStyle = '#e6ebf5'; g.fillText('SI-assisted', W - 38, 42);
+  g.restore();
+}
+
+// ---- storyboard (seconds) — total 29.5 s ----
+const scenes = [
+  { d: 3.0, cap: null, draw(t) {
+      drawHero(t * 0.6, 0.55);
+      const a = clamp(t / 0.6);
+      g.save(); g.globalAlpha = a; g.textAlign = 'center'; g.textBaseline = 'alphabetic';
+      g.fillStyle = '#ffc24b'; g.font = '600 20px "Segoe UI", system-ui, sans-serif'; g.fillText('NASA SPACE APPS CHALLENGE 2026 · LUNAR LANDING SITE NAVIGATOR', W / 2, 250);
+      g.fillStyle = '#ffffff'; g.font = '700 108px "Segoe UI", system-ui, sans-serif'; g.fillText('Penumbra', W / 2, 372);
+      g.fillStyle = '#e6ebf5'; g.font = '36px "Segoe UI", system-ui, sans-serif'; g.fillText('Will we have power? Can we call home?', W / 2, 440);
+      g.restore();
+    } },
+  { d: 4.5, cap: ['Shadows from real NASA LOLA terrain, computed live', 'One lunar day around Shackleton crater, with the Sun and Earth above the horizon'], compact: true,
+    draw(t) { drawHero(1.8 + t, 0, true); } },
+  { d: 3.5, cap: ['Any site, any date, one screen', 'Real horizon · Sun & Earth paths · time to sunset · battery · Deep Space Network'],
+    draw(t, f) { kb(IM.plan, [0, 0, 1440], [300, 40, 1150], f); } },
+  { d: 4.0, cap: ['A whole year of sunlight in a fraction of a second', 'GPU ray-marching: ridges of near-eternal light, craters in permanent shadow'],
+    draw(t, f) { kb(IM.year, [0, 280, 1280], [250, 560, 760], f); } },
+  { d: 4.0, cap: ['Stand at the site', 'The Earth at true size and real phase, just above the ridges'],
+    draw(t, f) { kb(IM.eye, [0, 0, 1280], [240, 60, 800], f); } },
+  { d: 4.5, cap: ['Miss the target by 500 m: sunlight 23–99 %', 'A CLPS-class battery survives at only 7 of 19 touchdown points'],
+    draw(t, f) { kb(IM.ellipse, [80, 290, 1120], [330, 400, 620], f); } },
+  { d: 3.5, cap: ['Launch slipped? Scan every site × every landing day', '1 Jan 2027: no link to Earth for a week · 8 Jan: 73 %'],
+    draw(t, f) { fitZoom(IM.compare, f, 1, 1.08); } },
+  { d: 2.5, cap: null, draw(t) {
+      g.fillStyle = '#070a12'; g.fillRect(0, 0, W, H);
+      const grd = g.createRadialGradient(W * 0.8, -60, 40, W * 0.8, -60, 900); grd.addColorStop(0, '#1a2552'); grd.addColorStop(1, 'rgba(7,10,18,0)');
+      g.fillStyle = grd; g.fillRect(0, 0, W, H);
+      const a = clamp(t / 0.5);
+      g.save(); g.globalAlpha = a; g.textAlign = 'center';
+      g.fillStyle = '#ffffff'; g.font = '700 64px "Segoe UI", system-ui, sans-serif'; g.fillText('Penumbra', W / 2, 232);
+      g.fillStyle = '#ffc24b'; g.font = '600 26px "Segoe UI", system-ui, sans-serif'; g.fillText('Team 42 WW · Kazakhstan', W / 2, 280);
+      g.fillStyle = '#39d98a'; g.font = '600 30px "Segoe UI", system-ui, sans-serif';
+      g.fillText('Matches NASA/JPL Horizons within 9″', W / 2, 352);
+      g.fillText('Reproduces published south-pole illumination within 0.3 points', W / 2, 398);
+      g.fillStyle = '#c3cbe0'; g.font = '28px "Segoe UI", system-ui, sans-serif';
+      g.fillText('NASA LRO LOLA · JPL Horizons · Deep Space Network', W / 2, 470);
+      g.fillText('No install: runs in any modern web browser', W / 2, 512);
+      g.restore();
+    } },
+];
+const XF = 0.45;                                                       // crossfade (s)
+let acc = 0; for (const s of scenes) { s.t0 = acc; acc += s.d; }
+const TOTAL = acc;
+
+function renderAt(T) {
+  let i = scenes.findIndex(s => T < s.t0 + s.d); if (i < 0) i = scenes.length - 1;
+  const s = scenes[i], t = T - s.t0, f = t / s.d;
+  g.globalAlpha = 1;
+  if (i > 0 && t < XF) {                                               // crossfade from the previous scene
+    const p = scenes[i - 1]; p.draw(p.d, 1);
+    g.globalAlpha = ease(t / XF); s.draw(t, f); g.globalAlpha = 1;
+  } else s.draw(t, f);
+  const inA = i > 0 ? clamp((t - 0.15) / 0.45) : 0, outA = clamp((s.d - t) / 0.35);
+  if (s.cap) caption(s.cap[0], s.cap[1], Math.min(inA, i < scenes.length - 1 ? 1 : outA), s.compact);
+  if (i > 1 && i < scenes.length - 1) badge(Math.min(1, clamp(T - scenes[2].t0)));   // the hero frames carry their own title
+  siMark();                                                            // on every frame, title and end cards included
+  if (T > TOTAL - 0.4) { g.fillStyle = `rgba(0,0,0,${clamp((T - (TOTAL - 0.4)) / 0.4)})`; g.fillRect(0, 0, W, H); }
+}
+
+window.__video = { renderAt, TOTAL, canvas: c };                      // for contact sheets / checks
+
+if (location.hash === '#render') {
+  const N = Math.round(TOTAL * FPS);
+  for (let k = 0; k < N; k++) {
+    renderAt(k / FPS);
+    const blob = await new Promise(r => c.toBlob(r, 'image/webp', 0.93));
+    const res = await fetch(`/__save/vf-${String(k).padStart(3, '0')}.webp`, { method: 'POST', body: blob });
+    if (!res.ok) { status.textContent = `save failed at frame ${k}: ${res.status}`; throw new Error('save failed'); }
+    if (k % 15 === 0) status.textContent = `rendering ${k + 1}/${N}`;
+  }
+  status.textContent = `done: ${N} frames, ${TOTAL.toFixed(1)} s @ ${FPS} fps`;
+  document.title = 'RENDER DONE';
+} else {
+  status.textContent = `${TOTAL.toFixed(1)} s · preview (add #render to export frames)`;
+  const t0 = performance.now();
+  const loop = now => { renderAt(((now - t0) / 1000) % TOTAL); requestAnimationFrame(loop); };
+  requestAnimationFrame(loop);
+}
+</script>
+</body>
+</html>
