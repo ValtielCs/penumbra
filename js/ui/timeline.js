@@ -106,7 +106,7 @@ export class Timeline {
     for (const [t, lab] of ticks) {
       const x = Math.round(this.xOf(t)) + 0.5;
       ctx.beginPath(); ctx.moveTo(x, rows.sun[0]); ctx.lineTo(x, ey + eh); ctx.stroke();
-      ctx.fillText(lab, x, h - 12);
+      ctx.fillText(lab, Math.min(x, w - ctx.measureText(lab).width / 2 - 2), h - 12);   // a tick on the window end stays inside the canvas
     }
 
     // now cursor

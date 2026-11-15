@@ -111,7 +111,8 @@ canvas { display: block; width: 100%; }
 #panorama { height: 300px; cursor: grab; touch-action: none; }
 #panorama:active { cursor: grabbing; }
 #timeline { height: 214px; cursor: ew-resize; touch-action: none; }
-.map-wrap { position: relative; width: 100%; max-width: 640px; aspect-ratio: 1 / 1; margin: 0 auto; border-radius: 8px; overflow: hidden; background: #05070d; }
+/* square up to 640 px; on wider panels the map keeps 640 px of height and fills the width (the shader keeps one km/px scale) */
+.map-wrap { position: relative; width: 100%; aspect-ratio: 1 / 1; max-height: 640px; margin: 0 auto; border-radius: 8px; overflow: hidden; background: #05070d; }
 #map-gl, #map { position: absolute; inset: 0; width: 100%; height: 100%; }
 #map { cursor: crosshair; touch-action: none; }
 .map-note { position: absolute; left: 8px; bottom: 8px; font-size: 11px; background: rgba(5, 7, 13, .75); padding: 3px 7px; border-radius: 6px; pointer-events: none; }
@@ -241,7 +242,7 @@ td.best { color: var(--both); font-weight: 600; }
 /* ---------- responsive ---------- */
 @media (max-width: 1180px) {
   .grid2 { grid-template-columns: 1fr; }
-  .map-wrap { max-width: 520px; }
+  .map-wrap { max-height: 520px; }
 }
 @media (max-width: 900px) {
   .plan { grid-template-columns: 1fr; }
