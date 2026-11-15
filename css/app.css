@@ -266,7 +266,11 @@ td.best { color: var(--both); font-weight: 600; }
    fits in the window without scrolling or full screen. The map never needs to be taller than the Now panel next to it. */
 @media (min-width: 1181px) and (min-height: 1300px) and (max-height: 1527px) {
   #panorama { height: 210px; }
-  .v3d-wrap { height: 236px; }
+  .v3d-wrap { height: 230px; }
   #timeline { height: 184px; }
   .map-wrap { max-width: clamp(420px, calc(100vh - 790px), 640px); }
+  /* panels whose content grows (best-dates list, landing-ellipse results) scroll inside instead of lengthening the page */
+  .side { max-height: calc(100vh - 110px); }
+  .metrics-card { max-height: calc(100vh - 712px); }
+  .side, .metrics-card { overflow-y: auto; overflow-x: hidden; scrollbar-width: thin; scrollbar-color: #2a3550 transparent; }
 }
